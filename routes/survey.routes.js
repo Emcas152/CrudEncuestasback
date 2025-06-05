@@ -3,6 +3,7 @@ const router = express.Router();
 const { 
     createSurvey, 
     getSurveys, 
+    getSurveyById,
     getSurveyCount, 
     updateSurvey, 
     deleteSurvey 
@@ -12,6 +13,7 @@ const authMiddleware = require('../middleware/auth.middleware');
 
 router.post('/', authMiddleware, createSurvey);
 router.get('/', authMiddleware, getSurveys);
+router.get('/:id', authMiddleware, getSurveyById);
 router.get('/count', authMiddleware, getSurveyCount);
 router.put('/:id', authMiddleware, updateSurvey);
 router.delete('/:id', authMiddleware, deleteSurvey);

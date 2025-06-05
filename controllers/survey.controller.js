@@ -14,9 +14,8 @@ const createSurvey = async (req, res) => {
             .input('longitude', sql.Float, longitude)
             .query(`INSERT INTO Surveys 
                     (name, address, phone, nationality, latitude, longitude) 
-                    VALUES 
-                    (@name, @address, @phone, @nationality, @latitude, @longitude)`);
-        
+                    VALUES (@name, @address, @phone, @nationality, @latitude, @longitude)`);
+
         res.status(201).json({ message: 'Encuesta creada exitosamente' });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -34,6 +33,25 @@ const getSurveys = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+const getSurveyById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await poolConnect;
+        const result = await pool.request()
+            .input('id', sql.Int, id)
+            .query('SELECT * FROM Surveys WHERE id = @id');
+
+        if (result.recordset.length > 0) {
+            res.status(200).json(result.recordset[0]);
+        } else {
+            res.status(404).json({ message: 'Encuesta no encontrada' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 const getSurveyCount = async (req, res) => {
     try {
         await poolConnect;
@@ -97,6 +115,7 @@ const deleteSurvey = async (req, res) => {
 module.exports = {
     createSurvey,
     getSurveys,
+    getSurveyById,
     getSurveyCount,
     updateSurvey,
     deleteSurvey
@@ -105,6 +124,7 @@ module.exports = {
 module.exports = {
     createSurvey,
     getSurveys,
+    getSurveyById,
     getSurveyCount,
     updateSurvey,
     deleteSurvey
